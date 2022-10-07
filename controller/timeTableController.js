@@ -1,6 +1,5 @@
 const employee = require("../models/employee");
-const { db } = require("../models/TimeTable");
-const TimeTable = require("../models/TimeTable");
+const TimeTable = require("../models/timeTable");
 const CustomErrorHandler = require("../services/CustomErrorHandler");
 const { HTTP_STATUS } = require("../utils/constants");
 const { errorResponse, successResponse } = require("../utils/response");
