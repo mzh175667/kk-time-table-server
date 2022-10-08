@@ -156,10 +156,11 @@ const timeTaleController = {
   async getSingleTimeTable(req, res, next) {
     let timeTable;
     try {
-      timeTable = await TimeTable.findById({ _id: req.params.userId }).select(
-        "-updatedAt -__v "
-      );
-
+      timeTable = await TimeTable.findById({
+        _id: req.params.employeeId,
+      })
+        .select("-updatedAt -__v ")
+        .populate("employeeId");
       if (timeTable.length == 0) {
         return errorResponse(res, HTTP_STATUS.NOT_FOUND, "No Data Found!");
       }

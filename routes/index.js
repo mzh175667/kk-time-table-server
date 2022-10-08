@@ -26,7 +26,7 @@ router.delete("/employee", employeesController.delete);
 router.post("/checkin/:employeeId", timeTableController.checkIn);
 router.post("/checkout/:id", timeTableController.checkOut);
 router.get("/timeTable", timeTableController.getTimeTables);
-router.get("/timeTable/:id", timeTableController.getSingleTimeTable);
+router.get("/timeTable/:employeeId", timeTableController.getSingleTimeTable);
 router.delete("/timeTable", timeTableController.delete);
 
 module.exports = router;
