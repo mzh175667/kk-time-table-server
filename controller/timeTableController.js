@@ -154,34 +154,28 @@ const timeTaleController = {
   },
   // get timeTables by _id
   async getSingleTimeTable(req, res, next) {
-    let document,
-      success,
-      message = "",
-      statusCode,
-      timeTable;
+    let timeTable;
     try {
       timeTable = await TimeTable.findById({ _id: req.params.userId }).select(
         "-updatedAt -__v "
       );
-      if (timeTable) {
-        (message = "TimeTable of this employee got successfully"),
-          (statusCode = HTTP_STATUS.OK),
-          (success = true);
-      } else {
-        message = "Not found";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+
+      if (timeTable.length == 0) {
+        return errorResponse(res, HTTP_STATUS.NOT_FOUND, "No Data Found!");
       }
+
+      return successResponse(
+        res,
+        next,
+        {
+          timeTable: timeTable,
+        },
+        HTTP_STATUS.OK,
+        "TimeTable of this employee got successfully"
+      );
     } catch (err) {
       return next(err);
     }
-    document = {
-      statusCode,
-      success,
-      message,
-      data: timeTable,
-    };
-    res.status(statusCode).json(document);
   },
   //   // delete user
   async delete(req, res, next) {
