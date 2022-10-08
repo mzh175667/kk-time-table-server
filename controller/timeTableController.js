@@ -16,11 +16,7 @@ const timeTaleController = {
     }
 
     const { checkInTime, date, checkOutTime } = req.body;
-    let document,
-      success,
-      message = "",
-      statusCode,
-      timeTable;
+    let timeTable;
     try {
       timeTable = await TimeTable.create({
         checkIn: true,
@@ -30,22 +26,23 @@ const timeTaleController = {
         checkOut: false,
         employeeId: req.params.employeeId,
       });
-      if (timeTable) {
-        (message = "CheckIn successfully"),
-          (statusCode = HTTP_STATUS.CREATED),
-          (success = true);
-      } else {
-        message = "Sorry, you are not able to Check In";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+      if (timeTable.length == 0) {
+        return errorResponse(
+          res,
+          HTTP_STATUS.NOT_FOUND,
+          "Sorry, you are not able to Check In"
+        );
       }
-      document = {
-        statusCode,
-        success,
-        message,
-        data: timeTable,
-      };
-      res.status(statusCode).json(document);
+
+      return successResponse(
+        res,
+        next,
+        {
+          timeTable: timeTable,
+        },
+        HTTP_STATUS.OK,
+        "CheckIn successfully"
+      );
     } catch (err) {
       return next(err);
     }
@@ -58,11 +55,7 @@ const timeTaleController = {
     }
 
     const { checkOutTime } = req.body;
-    let document,
-      success,
-      message = "",
-      statusCode,
-      timeTable;
+    let timeTable;
     try {
       timeTable = await TimeTable.findByIdAndUpdate(
         { _id: req.params.id },
@@ -72,23 +65,23 @@ const timeTaleController = {
         },
         { new: true }
       ).select("-__v -updatedAt");
-      if (timeTable) {
-        (message = "CheckOut successfully"),
-          (statusCode = HTTP_STATUS.CREATED),
-          (success = true);
-      } else {
-        message =
-          "Sorry, you are not able to CheckOut(This user is not existing for today)";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+      if (timeTable.length == 0) {
+        return errorResponse(
+          res,
+          HTTP_STATUS.NOT_FOUND,
+          "Sorry, you are not able to CheckOut(This user is not existing for today)"
+        );
       }
-      document = {
-        statusCode,
-        success,
-        message,
-        data: timeTable,
-      };
-      res.status(statusCode).json(document);
+
+      return successResponse(
+        res,
+        next,
+        {
+          timeTable: timeTable,
+        },
+        HTTP_STATUS.OK,
+        "CheckOut successfully"
+      );
     } catch (err) {
       return next(err);
     }
