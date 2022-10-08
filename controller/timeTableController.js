@@ -172,7 +172,7 @@ const timeTaleController = {
           timeTable: timeTable,
         },
         HTTP_STATUS.OK,
-        "TimeTable of this employee got successfully"
+        "TimeTable of this employee  successfully"
       );
     } catch (err) {
       return next(err);
