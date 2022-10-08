@@ -214,7 +214,6 @@ const timeTaleController = {
       statusCode,
       success,
       message,
-      data: timeTable,
     };
     res.status(statusCode).json(document);
   },
