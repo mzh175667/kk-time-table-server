@@ -41,20 +41,14 @@ const employeeController = {
       const exist = await Employee.exists({ email: req.body.email });
       if (exist) {
         return next(
-          CustomErrorHandler.alreadyExist(
-            "Already Have An Account, Please SignIn!"
-          )
+          CustomErrorHandler.alreadyExist("This email is already existing")
         );
       }
     } catch (err) {
       return next(err);
     }
     const { name, email, designation } = req.body;
-    let document,
-      success,
-      message = "",
-      statusCode,
-      employee;
+    let employee;
     try {
       employee = await Employee.create({
         name,
@@ -62,52 +56,50 @@ const employeeController = {
         designation,
         pin: pin,
       });
-      if (employee) {
-        (message = "created successfully"),
-          (statusCode = HTTP_STATUS.CREATED),
-          (success = true);
-      } else {
-        message = "Sorry, Employee is not created";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+      if (employee.length == 0) {
+        return errorResponse(
+          res,
+          HTTP_STATUS.NOT_FOUND,
+          "Sorry, Employee is not created"
+        );
       }
-      document = {
-        statusCode,
-        success,
-        message,
-        data: employee,
-      };
-      res.status(statusCode).json(document);
+
+      return successResponse(
+        res,
+        next,
+        {
+          employee: employee,
+        },
+        HTTP_STATUS.CREATED,
+        "Created successfully"
+      );
     } catch (err) {
       return next(err);
     }
   },
   //get employee
   async getEmployees(req, res, next) {
-    let document,
-      success,
-      message = "",
-      statusCode,
-      employee;
+    let employee;
 
     try {
       employee = await Employee.find();
-      if (employee) {
-        (message = "Get all employees successfully"),
-          (statusCode = HTTP_STATUS.OK),
-          (success = true);
-      } else {
-        message = "Something went wrong";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+      if (employee.length == 0) {
+        return errorResponse(
+          res,
+          HTTP_STATUS.NOT_FOUND,
+          "Something went wrong"
+        );
       }
-      document = {
-        statusCode,
-        success,
-        message,
-        data: employee,
-      };
-      res.status(statusCode).json(document);
+
+      return successResponse(
+        res,
+        next,
+        {
+          employee: employee,
+        },
+        HTTP_STATUS.CREATED,
+        "Get all employees successfully"
+      );
     } catch (err) {
       return next(err);
     }
@@ -115,11 +107,7 @@ const employeeController = {
   //update employee
   async update(req, res, next) {
     const { name, designation } = req.body;
-    let document,
-      success,
-      message = "",
-      statusCode,
-      employee;
+    let employee;
 
     try {
       employee = await Employee.findByIdAndUpdate(
@@ -130,64 +118,56 @@ const employeeController = {
         },
         { new: true }
       ).select("-__v -updatedAt");
-      if (employee) {
-        (message = "updated successfully"),
-          (statusCode = HTTP_STATUS.OK),
-          (success = true);
-      } else {
-        message = "Something went wrong";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+
+      if (employee.length == 0) {
+        return errorResponse(
+          res,
+          HTTP_STATUS.NOT_FOUND,
+          "Something went wrong"
+        );
       }
-      document = {
-        statusCode,
-        success,
-        message,
-        data: employee,
-      };
-      res.status(statusCode).json(document);
+
+      return successResponse(
+        res,
+        next,
+        {
+          employee: employee,
+        },
+        HTTP_STATUS.CREATED,
+        "updated successfully"
+      );
     } catch (err) {
       return next(err);
     }
   },
   // get employee by _id
   async getEmployeeById(req, res, next) {
-    let document,
-      success,
-      message = "",
-      statusCode,
-      employee;
+    let employee;
     try {
       employee = await Employee.findById({ _id: req.params.employeeId }).select(
         "-password -updatedAt -__v "
       );
-      if (employee) {
-        (message = "get employee by id successfully"),
-          (statusCode = HTTP_STATUS.OK),
-          (success = true);
-      } else {
-        message = "Not found";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+
+      if (employee.length == 0) {
+        return errorResponse(res, HTTP_STATUS.NOT_FOUND, "Not found");
       }
+
+      return successResponse(
+        res,
+        next,
+        {
+          employee: employee,
+        },
+        HTTP_STATUS.CREATED,
+        "get employee by id successfully"
+      );
     } catch (err) {
       return next(err);
     }
-    document = {
-      statusCode,
-      success,
-      message,
-      data: employee,
-    };
-    res.status(statusCode).json(document);
   },
   // delete employee
   async delete(req, res, next) {
-    let document,
-      success,
-      message = "",
-      statusCode,
-      employee;
+    let employee;
     const { employee_ids } = req.body;
     try {
       await Promise.all(
@@ -196,25 +176,23 @@ const employeeController = {
             employee = await Employee.findByIdAndDelete(employee_id);
           })
       );
-      if (employee) {
-        (message = "Employees deleted successfully"),
-          (statusCode = HTTP_STATUS.OK),
-          (success = true);
-      } else {
-        message = "Not Found";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+      if (employee == null) {
+        return errorResponse(res, HTTP_STATUS.NOT_FOUND, "No Data Found!");
       }
+
+      return successResponse(
+        res,
+        next,
+        {
+          employee: null,
+        },
+        HTTP_STATUS.OK,
+        "Employees deleted successfully"
+      );
     } catch (err) {
       console.log(err);
       return next(err);
     }
-    document = {
-      statusCode,
-      success,
-      message,
-    };
-    res.status(statusCode).json(document);
   },
   async userLogin(req, res, next) {
     // Validation

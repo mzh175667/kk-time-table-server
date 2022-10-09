@@ -10,9 +10,6 @@ const successResponse = (
   httpStatusCode,
   successMessage = ""
 ) => {
-  // console.log("data", data);
-  // console.log("httpStatusCode", httpStatusCode);
-  // console.log("successMessage", successMessage);
   if (!data || !httpStatusCode) {
     return expressNextObject(
       CustomErrorHandler.notFound(
@@ -28,36 +25,12 @@ const successResponse = (
     success: true,
   });
 };
-// const successResponse = (data, httpStatusCode, successMessage = "") => {
-//   console.log("data", data);
-//   console.log("httpStatusCode", httpStatusCode);
-//   console.log("successMessage", successMessage);
-//   if (!data || !httpStatusCode) {
-//     logger.error(
-//       LOGGER_TAGS.FOOTPRINT,
-//       `Success response has either no data=${data} or httpStatusCode=${httpStatusCode}`
-//     );
-//   }
-//   return {
-//     data: data,
-//     status: httpStatusCode ? httpStatusCode : HTTP_STATUS.OK,
-//     message: successMessage,
-//     success: true,
-//   };
-// };
-
 const errorResponse = (
   expressResponseObject,
   httpStatusCode,
   errorMessage,
   data = null
 ) => {
-  if (!httpStatusCode || !errorMessage) {
-    // logger.error(
-    //   LOGGER_TAGS.FOOTPRINT,
-    //   `Error response has either no errorMessage=${errorMessage} or httpStatusCode=${httpStatusCode}`
-    // );
-  }
   return expressResponseObject.status(httpStatusCode).send({
     statusCode: httpStatusCode
       ? httpStatusCode

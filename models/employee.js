@@ -10,9 +10,6 @@ const employeeSchema = new mongoose.Schema(
     pin: {
       type: String,
     },
-    originalPin: {
-      type: String,
-    },
     designation: {
       type: String,
     },

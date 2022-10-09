@@ -123,7 +123,9 @@ const timeTaleController = {
             $lt: new Date(),
             $gte: new Date(new Date().setDate(new Date().getDate() - date)),
           },
-        }).populate("employeeId");
+        })
+          .select("-updatedAt -__v ")
+          .populate("employeeId");
       }
       allData = await TimeTable.find().populate("employeeId");
       if (timeTable.length == 0) {
@@ -173,11 +175,7 @@ const timeTaleController = {
   },
   //   // delete user
   async delete(req, res, next) {
-    let document,
-      success,
-      message = "",
-      statusCode,
-      timeTable;
+    let timeTable;
     const { timeTable_ids } = req.body;
     try {
       await Promise.all(
@@ -186,24 +184,22 @@ const timeTaleController = {
             timeTable = await TimeTable.findByIdAndDelete(timeTable_id);
           })
       );
-      if (timeTable) {
-        (message = "TimeTables deleted successfully"),
-          (statusCode = HTTP_STATUS.OK),
-          (success = true);
-      } else {
-        message = "Not Found";
-        success = false;
-        statusCode = HTTP_STATUS.NOT_FOUND;
+      if (timeTable == null) {
+        return errorResponse(res, HTTP_STATUS.NOT_FOUND, "No Data Found!");
       }
+
+      return successResponse(
+        res,
+        next,
+        {
+          timeTable: null,
+        },
+        HTTP_STATUS.OK,
+        "TimeTables deleted successfully"
+      );
     } catch (err) {
       return next(err);
     }
-    document = {
-      statusCode,
-      success,
-      message,
-    };
-    res.status(statusCode).json(document);
   },
 };
 
