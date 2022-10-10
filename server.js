@@ -55,6 +55,38 @@ app.use("*", (req, res) => {
 });
 
 // App Listener
-app.listen(APP_PORT, () => {
+const server = app.listen(APP_PORT, () => {
   console.log(`Listening on port ${APP_PORT}`);
+});
+
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+    credentials: true,
+  },
+});
+io.on("connection", (socket) => {
+  console.log("a user connected: D");
+
+  socket.on("send_notification", (data) => {
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log(
+      "orders=============================================================================> from app side",
+      data
+    );
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    io.emit("get_notification", {
+      data,
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User Disconnected", socket.id);
+  });
 });

@@ -14,7 +14,6 @@ const timeTaleController = {
     if (error) {
       return next(error);
     }
-
     const { checkInTime, checkOutTime } = req.body;
     let timeTable;
     try {
@@ -183,7 +182,7 @@ const timeTaleController = {
             timeTable = await TimeTable.findByIdAndDelete(timeTable_id);
           })
       );
-      if (timeTable == null) {
+      if (timeTable.length == 0) {
         return errorResponse(res, HTTP_STATUS.NOT_FOUND, "No Data Found!");
       }
 
