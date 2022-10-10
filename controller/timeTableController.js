@@ -155,7 +155,7 @@ const timeTaleController = {
       })
         .select("-updatedAt -__v ")
         .populate("employeeId");
-      if (timeTable.length == 0) {
+      if (!timeTable) {
         return errorResponse(res, HTTP_STATUS.NOT_FOUND, "No Data Found!");
       }
 

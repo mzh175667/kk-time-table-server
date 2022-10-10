@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const CustomErrorHandler = require("../services/CustomErrorHandler");
 const employeeLoginSchema = require("../validators/employeeLoginSchema");
 const { successResponse, errorResponse } = require("../utils/response");
+const timeTable = require("../models/timeTable");
 
 const { ObjectId } = mongoose.Types;
 
@@ -174,6 +175,13 @@ const employeeController = {
       await Promise.all(
         employee_ids &&
           employee_ids.map(async (employee_id) => {
+            const exist = await timeTable.exists({
+              employeeId: employee_id,
+            });
+            console.log("employeeId=>", exist);
+            if (exist) {
+              employee = await timeTable.findByIdAndDelete(exist._id);
+            }
             employee = await Employee.findByIdAndDelete(employee_id);
           })
       );
@@ -198,13 +206,11 @@ const employeeController = {
   async userLogin(req, res, next) {
     // Validation
     const { error } = employeeLoginSchema.validate(req.body);
-
     if (error) {
       return next(error);
     }
 
     let employee, result;
-
     try {
       employee = await Employee.findOne({
         pin: req.body.pin,
