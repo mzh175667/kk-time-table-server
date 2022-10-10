@@ -15,13 +15,12 @@ const timeTaleController = {
       return next(error);
     }
 
-    const { checkInTime, date, checkOutTime } = req.body;
+    const { checkInTime, checkOutTime } = req.body;
     let timeTable;
     try {
       timeTable = await TimeTable.create({
         checkIn: true,
         checkInTime,
-        date,
         checkOutTime,
         checkOut: false,
         employeeId: req.params.employeeId,

@@ -11,9 +11,6 @@ const timeTableSchema = new mongoose.Schema(
     checkOutTime: {
       type: String,
     },
-    date: {
-      type: String,
-    },
     time: {
       type: String,
     },
