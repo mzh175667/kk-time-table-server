@@ -85,6 +85,7 @@ const employeeController = {
 
     try {
       employee = await Employee.find();
+      employee.reverse();
       if (employee.length == 0) {
         return errorResponse(
           res,
