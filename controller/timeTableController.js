@@ -125,7 +125,6 @@ const timeTaleController = {
           .select("-updatedAt -__v ")
           .populate("employeeId");
       }
-      timeTable.reverse();
       allData = await TimeTable.find().populate("employeeId");
       allData.reverse();
       if (timeTable.length == 0) {
