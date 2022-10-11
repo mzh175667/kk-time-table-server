@@ -68,12 +68,16 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("a user connected: D");
 
-  socket.on("send_notification", (data) => {
-    io.emit("get_notification", {
+  socket.on("send_checkin_notification", (data) => {
+    io.emit("get_checkin_notification", {
       data,
     });
   });
-
+  socket.on("send_checkout_notification", (data) => {
+    io.emit("get_checkout_notification", {
+      data,
+    });
+  });
   socket.on("disconnect", () => {
     console.log("User Disconnected", socket.id);
   });
