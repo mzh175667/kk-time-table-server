@@ -11,10 +11,16 @@ const timeTableSchema = new mongoose.Schema(
     checkOutTime: {
       type: String,
     },
+    reason: {
+      type: String,
+    },
     time: {
       type: String,
     },
     status: {
+      type: String,
+    },
+    totalTime: {
       type: String,
     },
     employeeId: {

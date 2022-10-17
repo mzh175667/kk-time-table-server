@@ -14,13 +14,12 @@ const timeTaleController = {
     if (error) {
       return next(error);
     }
-    const { checkInTime, checkOutTime } = req.body;
+    const { checkInTime } = req.body;
     let timeTable;
     try {
       timeTable = await TimeTable.create({
         checkIn: true,
         checkInTime,
-        checkOutTime,
         checkOut: false,
         employeeId: req.params.employeeId,
       });
@@ -52,14 +51,16 @@ const timeTaleController = {
       return next(error);
     }
 
-    const { checkOutTime } = req.body;
+    const { checkOutTime, reason, totalTime } = req.body;
     let timeTable;
     try {
       timeTable = await TimeTable.findByIdAndUpdate(
         { _id: req.params.id },
         {
           checkOut: true,
-          checkOutTime: checkOutTime,
+          checkOutTime,
+          reason,
+          totalTime,
         },
         { new: true }
       ).select("-__v -updatedAt");
